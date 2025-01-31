@@ -1,20 +1,42 @@
-import { View, Text, SafeAreaView, FlatList, Image } from 'react-native'
+import { View, Text, SafeAreaView, FlatList, Image, RefreshControl, Alert } from 'react-native'
 import React from 'react'
 import images from '../../constants/images'
 import SearchInput from '../../components/searchInput'
 import Trending from '../../components/trending'
-
-
+import EmptyState from '../../components/emptyState'
+import { useState, useEffect } from 'react'
+import { getAllPosts, getLatestPosts } from '../../lib/appwrite'
+import useAppwrite from '../../lib/useAppwrite'
+import VideoCard from '../../components/videoCard'
 
 const Home = () => {
+  
+  const {data: posts, refetch} = useAppwrite(getAllPosts)
+  // console.log(posts)
+
+  const {data: latestPosts} = useAppwrite(getLatestPosts)
+  // console.log(latestPosts)
+
+
+  const [refreshing, setRefreshing] = useState(false)
+  const onRefresh = async () => {
+    setRefreshing(true)
+    try{
+      await refetch()
+    }catch(err){
+      Alert.alert('Error', err.message)
+    }finally{
+      setRefreshing(false)
+    }
+  }
   return (
-    <SafeAreaView className="bg-primary">
+    <SafeAreaView className="bg-primary h-full">
       <FlatList
         className=""
-        data={[{id:1}]}
+        data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({item}) => (
-          <Text className="text-3xl text-white">{item.id}</Text>
+          <VideoCard video={item}/>
         )}
         ListHeaderComponent={() => (
           <View className="my-6 px-4 space-y-6">
@@ -33,10 +55,12 @@ const Home = () => {
             <View className="w-full flex-1 pt-5 pb-8">
               <Text className="text-gray-100 text-lg font-pregular mb-3">Latest Videos</Text>
 
-              <Trending posts={[{id:1}, {id:2}, {id:3}] ?? []}/>
+              <Trending posts={latestPosts ?? []}/>
             </View>
           </View>
         )}
+        ListEmptyComponent={() => (<EmptyState title="No Videos Found" subtitle="Be the first one to upload a video" />)}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       />
     </SafeAreaView>
   )

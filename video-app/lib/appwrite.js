@@ -1,3 +1,4 @@
+
 import { Client, Account, ID, Avatars, Databases, Query} from 'react-native-appwrite';
 
 export const appwriteConfig = {
@@ -9,6 +10,16 @@ export const appwriteConfig = {
     videoCollectionId: '679aeeac001d6aeddadc',
     storageId: '679aefe00007f99aa191'
 }
+
+const {
+    endpoint,
+platform,
+projectId,
+databaseId,
+userCollectionId,
+videoCollectionId,
+storageId,
+} = appwriteConfig
 
 
 // Init your React Native SDK
@@ -95,5 +106,31 @@ export async function logoutUser() {
         console.log("All sessions cleared successfully!");
     } catch (err) {
         console.error("Error clearing sessions:", err);
+    }
+}
+
+
+export const getAllPosts = async () => {
+    try{
+        const posts = await databases.listDocuments(
+            databaseId,
+            videoCollectionId
+        )
+        return posts.documents
+    }catch(err){
+        throw err;
+    }
+}
+
+export const getLatestPosts = async () => {
+    try{
+        const posts = await databases.listDocuments(
+            databaseId,
+            videoCollectionId,
+            [Query.orderDesc('$createdAt', Query.limit(7))]
+        )
+        return posts.documents
+    }catch(err){
+        throw err;
     }
 }
