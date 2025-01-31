@@ -8,7 +8,7 @@ import {styled} from 'nativewind'
 
 const TabIcon = ({icon, color, name, focused}) => {
     return (
-        <View className="items-center justify-center gap-0.5"> 
+        <View className="items-center justify-center gap-0.5 mt-10"> 
             <Image source={icon}
             resizeMode="contain"
             tintColor={color}

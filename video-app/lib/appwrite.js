@@ -58,7 +58,7 @@ export const createUser = async (email, password, username) => {
                 avatar: avatarURL
             }
         )
-        console.log("New User Document:", newUser);
+        // console.log("New User Document:", newUser);
         return newUser;
     } catch(err){
         console.log(err)
@@ -88,7 +88,7 @@ export async function getCurrentUser() {
             appwriteConfig.userCollectionId,
             [Query.equal('accountId', currentAccount.$id)]
         )
-        console.log("Current User from DB:", currentUser);
+        // console.log("Current User from DB:", currentUser);
         if(!currentUser){
             throw Error;
         }

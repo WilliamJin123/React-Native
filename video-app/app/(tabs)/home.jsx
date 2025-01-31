@@ -8,9 +8,30 @@ import { useState, useEffect } from 'react'
 import { getAllPosts, getLatestPosts } from '../../lib/appwrite'
 import useAppwrite from '../../lib/useAppwrite'
 import VideoCard from '../../components/videoCard'
+import { getCurrentUser } from '../../lib/appwrite'
+import { useGlobalContext } from '../../context/globalProvider'
+
+
 
 const Home = () => {
-  
+  const {user, setUser} = useGlobalContext()
+
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const result = await getCurrentUser()
+        setUser(result)
+      }catch(err){
+        throw new Error(err)
+      }
+    }
+    getUser()
+    
+  }, [])
+
+
+  console.log(user)
   const {data: posts, refetch} = useAppwrite(getAllPosts)
   // console.log(posts)
 
@@ -43,7 +64,7 @@ const Home = () => {
             <View className="justify-between items-start flex-row mb-6">
               <View>
                 <Text className="font-pmedium text-sm text-gray-100">Welcome Back</Text>
-                <Text className="text-2xl font-psemibold text-white">User</Text>
+                <Text className="text-2xl font-psemibold text-white">{user?.username ?? 'Guest'}</Text>
               </View>
               <View className="mt-1.5">
                 <Image source={images.logoSmall} style={{width:'3rem', height:'2rem'}} resizeMode='contain'/>
