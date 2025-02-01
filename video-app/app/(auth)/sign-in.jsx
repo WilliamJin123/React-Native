@@ -8,10 +8,10 @@ import CustomButton from '../../components/customButton'
 import { Link, router} from 'expo-router'
 import { getCurrentUser, signIn } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/globalProvider'
-
+import Loader from '../../components/loader'
 
 const SignIn = () => {
-  const {setUser, setIsLoggedIn} = useGlobalContext()
+  const {setUser, setIsLoggedIn, isLoading} = useGlobalContext()
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -43,6 +43,7 @@ const SignIn = () => {
 
   return (
     <SafeAreaView className="bg-primary h-full">
+    <Loader isLoading={isLoading}/>
       <ScrollView>
         <View className="w-full justify-center min-h-[50%] px-4 mt-3">
           <Image source={images.logo} resizeMode='contain' style={{ width: 115, height: 35 }} />

@@ -10,6 +10,8 @@ import * as DocumentPicker from 'expo-document-picker'
 import { router } from 'expo-router'
 import { createVideo } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/globalProvider'
+import * as ImagePicker from 'expo-image-picker'
+import Loader from '../../components/loader'
 
 const Create = () => {
   const [uploading, setUploading] = useState(false)
@@ -20,16 +22,19 @@ const Create = () => {
     prompt: ''
   })
 
-  const {user} = useGlobalContext()
+  const {user, isLoading} = useGlobalContext()
 
   const player = useVideoPlayer(form.video, (player) => {
     player.loop = false;
   });
 
   const openPicker = async (selectType) => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: selectType === 'image' ? ['image/png', 'image/jpg', 'image/jpeg'] : ['video/mp4', 'video/gif']
-    })
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: selectType ==='image' ? ['images'] :  ['videos'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
     if (!result.canceled) {
       const file = result.assets ? result.assets[0] : result;
       if (selectType === 'image') {
@@ -38,10 +43,6 @@ const Create = () => {
       if (selectType === 'video') {
         setForm({ ...form, video: file })
       }
-    } else {
-      setTimeout(() => {
-        Alert.alert('Document picked', JSON.stringify(result, null, 2))
-      }, 100)
     }
   }
 
@@ -73,6 +74,7 @@ const Create = () => {
 
   return (
     <SafeAreaView className="bg-primary h-full">
+       <Loader isLoading={isLoading}/>
       <ScrollView className="px-4 my-6">
         <Text className="text-2xl text-white font-psemibold">Upload Video</Text>
         <FormField title="Video Title"

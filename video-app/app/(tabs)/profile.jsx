@@ -2,7 +2,7 @@ import { View, Text, SafeAreaView, FlatList, TouchableOpacity, Image, } from 're
 import React from 'react'
 
 import SearchInput from '../../components/searchInput'
-
+import Loader from '../../components/loader'
 import EmptyState from '../../components/emptyState'
 import { useEffect } from 'react'
 import { getUserPosts, searchPosts, signOut } from '../../lib/appwrite'
@@ -14,7 +14,7 @@ import icons from '../../constants/icons'
 import InfoBox from '../../components/infoBox'
 
 const Profile = () => {
-  const { user, setUser, setIsLoggedIn } = useGlobalContext()
+  const { user, setUser, setIsLoggedIn, isLoading } = useGlobalContext()
 
 
 
@@ -49,6 +49,7 @@ const Profile = () => {
 
   return (
     <SafeAreaView className="bg-primary h-full">
+   <Loader isLoading={isLoading}/>
       <FlatList
         className=""
         data={posts}

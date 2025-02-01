@@ -115,7 +115,8 @@ export const getAllPosts = async () => {
     try{
         const posts = await databases.listDocuments(
             databaseId,
-            videoCollectionId
+            videoCollectionId,
+            [Query.orderDesc('$createdAt')]
         )
         return posts.documents
     }catch(err){
@@ -159,6 +160,7 @@ export const getUserPosts = async (userId) => {
         )
         return posts.documents
     }catch(err){
+        
         throw err;
     }
 }
@@ -168,6 +170,7 @@ export const signOut = async () => {
         const session = await account.deleteSession('current')
         return session;
     }catch(err){
+        console.log(err)
         throw new Error(err)
     }
 }
@@ -187,6 +190,7 @@ export const getFilePreview = async (fileId, type) => {
 
         return fileUrl
     }catch(err){
+        console.log(err)
         throw new Error(err)
     }
 }
@@ -194,22 +198,28 @@ export const getFilePreview = async (fileId, type) => {
 export const uploadFile = async (file, type) => {
     if(!file) return
 
-    const{mimeType, ...rest} = file
-    const asset = {type:mimeType, ...rest}
+    
+   
+    const asset = {
+        name: file.fileName,
+        type:file.mimeType,
+        size: file.fileSize,
+        uri:file.uri
+    }
 
     try{
-        const fileBlob = await fetch(asset.uri).then(res => res.blob());
-
+        
         const uploadedFile = await storage.createFile(
             storageId,
             ID.unique(),
-            fileBlob
+            asset
         )
-
+        console.log("Upload Success:", uploadedFile);
         const fileUrl = await getFilePreview(uploadedFile.$id, type)
 
         return fileUrl
     }catch(err){
+        console.log(err)
         throw new Error(err)
     }
 }
@@ -233,6 +243,7 @@ export const createVideo = async (form) => {
 
         return newPost
     }catch(err){
+        console.log(err)
         throw new Error(err)
     }
 }

@@ -10,13 +10,13 @@ import useAppwrite from '../../lib/useAppwrite'
 import VideoCard from '../../components/videoCard'
 import { getCurrentUser } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/globalProvider'
-
+import Loader from '../../components/loader'
 
 
 const Home = () => {
-  const {user, setUser} = useGlobalContext()
+  const {user, setUser, isLoading} = useGlobalContext()
 
-
+  console.log(isLoading)
   
 
 
@@ -41,6 +41,7 @@ const Home = () => {
   }
   return (
     <SafeAreaView className="bg-primary h-full">
+      <Loader isLoading={isLoading}/>
       <FlatList
         className=""
         data={posts}

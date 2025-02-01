@@ -6,6 +6,8 @@
   import CustomButton from '../components/customButton';
   import { useGlobalContext } from '../context/globalProvider';
   import { logoutUser } from '../lib/appwrite';
+  import Loader from '../components/loader';
+
   export default function App() {
     const {isLoading, isLoggedIn, user} = useGlobalContext()
     console.log(isLoading, isLoggedIn, user)
@@ -15,6 +17,7 @@
     }
     return (
       <SafeAreaView className="bg-primary h-full"> 
+        <Loader isLoading />
         <ScrollView contentContainerStyle={{height: '100%'}}>
           <View className="w-full items-center justify-center min-h-[80vh] px-4">
             <Image source={images.logo} resizeMode="contain" style={{width:130, height:84}}/>
